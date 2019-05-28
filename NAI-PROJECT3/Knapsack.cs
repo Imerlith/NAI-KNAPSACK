@@ -9,55 +9,82 @@ namespace NAI_PROJECT3
 {
     class Knapsack
     {
-        public Item[] Items { get; set; }
+        public List<Item> Items { get; set; }
         public int Capacity { get; set; }
       
         public double Timer;
 
-        public ICollection<Item> FindWithBruteForce()
+        public List<Item> FindWithBruteForce()
         {
-            var result = new List<Item>();
-            var bestValue = 0d;
-            var bestPosition = 0;
-            var size = Items.Length;
+
             var stopWatch = new Stopwatch();
-
             stopWatch.Start();
-            var numberOfSets = (long)Math.Pow(2, size);
-            for (int i = 0; i < numberOfSets; i++)
+            var bestSubset = new List<Item>();
+            var bestValue = 0d;
+            foreach (var subset in Subsets(Items))
             {
-                var value = 0d;
-                var weight = 0d;
-                for (int j = 0; j < size; j++)
+                double weight = GetWeigth(subset);
+                if (weight <= Capacity)
                 {
-                    if (((i >> j) & 1) != 1) continue;
-
-                    value += Items[j].Value;
-                    weight += Items[j].Weigth;
-
-                }
-
-                if(weight <= Capacity && value > bestValue)
-                {
-                    bestPosition = i;
-                    bestValue = value;
-                }
-
-            }
-            for (int i = 0; i < size; i++)
-            {
-                if (((bestPosition >> i) & 1) == 1)
-                {
-                    result.Add(Items[i]);
+                    double value = GetValue(subset);
+                    if (value > bestValue)
+                    {
+                        bestValue = value;
+                        bestSubset = subset;
+                    }
                 }
             }
-
+            
             stopWatch.Stop();
             Timer = stopWatch.Elapsed.TotalSeconds;
-            return result;
+            return bestSubset;
         }
 
-        public ICollection<Item> FindWithGreedy()
+        private double GetValue(List<Item> subset)
+        {
+            double value = 0;
+            foreach (Item item in subset)
+            {
+                value += item.Value;
+            }
+            return value;
+        }
+
+        private double GetWeigth(List<Item> subset)
+        {
+            double weight = 0;
+            foreach(Item item in subset)
+            {
+                weight += item.Weigth;
+            }
+            return weight;
+        }
+
+        private List<List<Item>> Subsets(List<Item> items)
+        {
+            var subsets = new List<List<Item>>();
+            if (!items.Any())
+            {
+                subsets.Add(new List<Item>());
+                return subsets;
+            }
+            var first = items.First();
+            var sub = items.GetRange(1, items.Count-1);
+            var subsubsets = Subsets(sub);
+            foreach(var subset in subsubsets)
+            {
+                subsets.Add(subset);
+                var augmentd = new List<Item>();
+                augmentd.AddRange(subset);
+                augmentd.Insert(0, first);
+                subsets.Add(augmentd);
+            }
+            return subsets;
+           
+            
+        }
+
+        public List<Item> FindWithGreedy()
         {
             var stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -73,6 +100,10 @@ namespace NAI_PROJECT3
             var currentWeigth = 0d;
             foreach(var item in temp)
             {
+                if (currentWeigth == Capacity)
+                {
+                    break;
+                }
                 if(currentWeigth + item.Weigth <= Capacity)
                 {
                     result.Add(item);

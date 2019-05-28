@@ -22,13 +22,14 @@ namespace NAI_PROJECT3
         {
             InitializeComponent();
 
+           
 
             var items = new List<Item>
             {
                 new Item{Value=20, Weigth= 5 },
                 new Item{Value=40, Weigth= 3},
                 new Item{Value=30, Weigth= 4 }
-            }.ToArray();
+            }.ToList();
             var knapsack = new Knapsack { Items = items, Capacity = 10 };
         }
 
@@ -44,7 +45,7 @@ namespace NAI_PROJECT3
                 {
                     items.Add(new Item { Weigth = double.Parse( weigths[i]), Value = double.Parse( values[i] )});
                 }
-                var knapsack = new Knapsack { Items = items.ToArray(), Capacity = int.Parse(capacity) };
+                var knapsack = new Knapsack { Items = items.ToList(), Capacity = int.Parse(capacity) };
                 var selected = MainGrid.Children.OfType<RadioButton>().ToList().Where(r => r.GroupName == "Algorithm" && r.IsChecked.Value).Single();
 
                 switch (selected.Content)

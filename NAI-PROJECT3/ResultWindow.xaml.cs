@@ -23,7 +23,7 @@ namespace NAI_PROJECT3
         {
             InitializeComponent();
         }
-        public ResultWindow(ICollection<Item> items, double timer, string name)
+        public ResultWindow(List<Item> items, double timer, string name)
         {
             InitializeComponent();
             TitleLabel.Content = name;
