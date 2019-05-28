@@ -38,7 +38,7 @@ namespace NAI_PROJECT3
                 allValue += item.Value;
                 allWeigth += item.Weigth;
             }
-            TimeLabel.Content = timer;
+            TimeLabel.Content = timer.ToString("0." + new string('#',399));
             ValuesLabel.Content = values;
             WeigthLabel.Content = weights;
             FullValueLabel.Content = allValue;
